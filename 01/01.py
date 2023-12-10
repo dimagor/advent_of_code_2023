@@ -39,17 +39,15 @@ def get_digit_from_words_and_numbers(txt):
     return get_digit(extract_words_and_numbers(txt))
 
 
-def part_one(cal_strings):
-    print(sum([get_digit_from_numbers(l) for l in cal_strings]))
+if __name__ == "__main__":
+    input = "01/input"
+    with open(input) as f:
+        lines = f.read().splitlines()
 
+    # Part 1
+    p1_digits = [get_digit_from_numbers(l) for l in lines]
+    print(f"The answer to 1.1 is: {sum(p1_digits)}")
 
-def part_two(cal_strings):
-    print(sum([get_digit_from_words_and_numbers(l) for l in cal_strings]))
-
-
-if __name__ == "main":
-    cal_doc = "01/input"
-    with open(cal_doc) as f:
-        cal_strings = f.read().splitlines()
-    part_one(cal_strings)
-    part_two(cal_strings)
+    # Part 2
+    p2_digits = [get_digit_from_words_and_numbers(l) for l in lines]
+    print(f"The answer to 1.2 is: {sum(p2_digits)}")
