@@ -19,7 +19,7 @@ def extract_words_and_numbers(txt):
         "nine": "9",
     }
 
-    all_nums = re.findall("(?=(one|two|three|four|five|six|seven|eight|nine|\d))", txt)
+    all_nums = re.findall(r"(?=(one|two|three|four|five|six|seven|eight|nine|\d))", txt)
 
     nums = [sub_dict.get(n, n) for n in all_nums]
 
