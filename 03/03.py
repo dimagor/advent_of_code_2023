@@ -19,6 +19,32 @@ def get_valid_part_numbers(lines):
     return part_numbers
 
 
+def find_connected_parts(line, gear_position):
+    connected_parts = []
+    for part in re.finditer(r"\d+", line):
+        part_span = list(range(part.start(), part.end()))
+        if gear_position - 1 in part_span or gear_position + 1 in part_span:
+            connected_parts.append(int(part.group(0)))
+    return connected_parts
+
+
+def calc_gear_ratios(lines):
+    gear_ratios = []
+    for idx, line in enumerate(lines):
+        for match in re.finditer(r"\*", line):
+            connected_parts = []
+            gear_position = match.start()
+            connected_parts += find_connected_parts(lines[idx], gear_position)
+            if idx > 0:
+                connected_parts += find_connected_parts(lines[idx - 1], gear_position)
+            if idx + 1 < len(lines):
+                connected_parts += find_connected_parts(lines[idx + 1], gear_position)
+            if len(connected_parts) == 2:
+                # print(connected_parts)
+                gear_ratios.append(connected_parts[0] * connected_parts[1])
+    return gear_ratios
+
+
 if __name__ == "__main__":
     input = "03/input"
     with open(input) as f:
@@ -26,3 +52,7 @@ if __name__ == "__main__":
 
     part_numbers = get_valid_part_numbers(lines)
     print(f"The answer to 3.1 is: {sum(part_numbers)}")
+
+    gear_ratios = calc_gear_ratios(lines)
+    # Incorrect
+    print(f"The answer to 3.2 is: {sum(gear_ratios)}")
