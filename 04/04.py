@@ -1,11 +1,14 @@
 import re
 
 
-def scratch_point_total(lines):
-    point_total = 0
+def calc_points(n_matches):
+    return max(0, int(2 ** (n_matches - 1)))
+
+
+def scratch_matches(lines):
+    match_values = []
     for l in lines:
         card_split = l.split(":")
-        card_number = re.findall(r"\d+", card_split[0])[0]
         game_split = card_split[1].split("|")
         scratch_numbers = {
             int(i.strip()) for i in game_split[0].strip().split(" ") if i.strip() != ""
@@ -14,9 +17,21 @@ def scratch_point_total(lines):
             int(i.strip()) for i in game_split[1].strip().split(" ") if i.strip() != ""
         }
         n_matches = len(scratch_numbers.intersection(winning_numbers))
-        points = max(0, int(2 ** (n_matches - 1)))
-        point_total += points
-    return point_total
+        match_values.append(n_matches)
+    return match_values
+
+
+def calc_card_counts(matches):
+    cards = {c: {"count": 1, "matches": m} for c, m in enumerate(matches)}
+
+    for k, v in cards.items():
+        c = v.get("count")
+        m = v.get("matches")
+        for i in range(k + 1, k + m + 1):
+            cards[i]["count"] += c
+
+    total_cards = sum([v.get("count") for v in cards.values()])
+    return total_cards
 
 
 if __name__ == "__main__":
@@ -24,4 +39,8 @@ if __name__ == "__main__":
     with open(input) as f:
         lines = f.read().splitlines()
 
-    print(f"Part 4.1: {scratch_point_total(lines)}")
+    matches = scratch_matches(lines)
+    points = [calc_points(m) for m in matches]
+    print(f"Part 4.1: {sum(points)}")
+
+    print(f"Part 4.1: {calc_card_counts(matches)}")
